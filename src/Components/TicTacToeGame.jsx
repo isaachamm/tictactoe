@@ -3,20 +3,21 @@ import { useState } from "react";
 
 export default function TicTacToeGame() {
   // const [history, setHistory] = useState(Array(9).fill([]).map(() => 
-  //   Array(3).fill([]).map(() => (Array(3).fill("")))));
+  //   Array(size).fill([]).map(() => (Array(size).fill("")))));
+  const size = 4;
   const [history, setHistory] = useState(Array(9).fill([]).map(() => 
-    Array(3).fill([]).map(() => (Array(3).fill()))));
+    Array(size).fill([]).map(() => (Array(size).fill()))));
   const [currentMove, setCurrentMove] = useState(0);
   const [winner, setWinner] = useState(null);
   const [xDictionary, setxDictionary] = useState({
-    Rows: Array(3).fill(0),
-    Columns: Array(3).fill(0),
+    Rows: Array(size).fill(0),
+    Columns: Array(size).fill(0),
     NegativeDiagonal: 0,
     RightDiagonal: 0
   });
   const [oDictionary, setoDictionary] = useState({
-    Rows: Array(3).fill(0),
-    Columns: Array(3).fill(0),
+    Rows: Array(size).fill(0),
+    Columns: Array(size).fill(0),
     NegativeDiagonal: 0,
     RightDiagonal: 0
   });  
@@ -54,7 +55,7 @@ export default function TicTacToeGame() {
     <div className="game">
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} 
-          xDictionary={xDictionary} oDictionary={oDictionary} />
+          xDictionary={xDictionary} oDictionary={oDictionary} size ={size} />
       </div>
       <div className="game-info">
         <ol>
@@ -76,14 +77,12 @@ function Square({ value, onSqaureClick }) {
   );
 }
 
-function Board({ xIsNext, squares, onPlay, xDictionary, oDictionary }) {
-
-  const size = 3;
+function Board({ xIsNext, squares, onPlay, xDictionary, oDictionary, size }) {
 
   function handleClick(row, column) {
     if (squares[row][column]) {
       return;
-    } else if (CalculateWinner(row, column, xIsNext, xDictionary, oDictionary)) {
+    } else if (CalculateWinner(row, column, size, xIsNext, xDictionary, oDictionary)) {
       // winner = true;
       return;
     }
@@ -99,7 +98,7 @@ function Board({ xIsNext, squares, onPlay, xDictionary, oDictionary }) {
   }
 
   let status;
-  const winner = CheckWinner(xDictionary, oDictionary)
+  const winner = CheckWinner(xDictionary, oDictionary, size)
   if (winner) {
     status = "Winner: " + winner;
   }
@@ -137,9 +136,9 @@ function Board({ xIsNext, squares, onPlay, xDictionary, oDictionary }) {
   );
 }
 
-function CalculateWinner(row, column, xIsNext, xDictionary, oDictionary) {
+function CalculateWinner(row, column, size, xIsNext, xDictionary, oDictionary) {
   
-  if (CheckWinner(xDictionary, oDictionary)) {
+  if (CheckWinner(xDictionary, oDictionary, size)) {
     return true;
   }
 
@@ -149,7 +148,7 @@ function CalculateWinner(row, column, xIsNext, xDictionary, oDictionary) {
     if (row === column) {
       xDictionary["NegativeDiagonal"] += 1
     }
-    if ((row + column) === 3) {
+    if ((row + column) === size) {
       xDictionary["PositiveDiagonal"] += 1
     }
 
@@ -159,7 +158,7 @@ function CalculateWinner(row, column, xIsNext, xDictionary, oDictionary) {
     if (row === column) {
       oDictionary["NegativeDiagonal"] += 1
     }
-    if ((row + column) === 3) {
+    if ((row + column) === size) {
       oDictionary["PositiveDiagonal"] += 1
     }
 
@@ -168,29 +167,29 @@ function CalculateWinner(row, column, xIsNext, xDictionary, oDictionary) {
   return null;
 }
 
-function CheckWinner(xDictionary, oDictionary) {
+function CheckWinner(xDictionary, oDictionary, size) {
   
-  for (let i = 0; i < 3; i++) {
-    if (xDictionary["Rows"][i] === 3
-    || xDictionary["Columns"][i] === 3) {
+  for (let i = 0; i < size; i++) {
+    if (xDictionary["Rows"][i] === size
+    || xDictionary["Columns"][i] === size) {
       return "X";
     }
   }
   
-  if (xDictionary["NegativeDiagonal"] === 3
-    || xDictionary["PositiveDiagonal"] === 3) {
+  if (xDictionary["NegativeDiagonal"] === size
+    || xDictionary["PositiveDiagonal"] === size) {
     return "X";
   }
 
-  for (let i = 0; i < 3; i++) {
-    if (oDictionary["Rows"][i] === 3
-    || oDictionary["Columns"][i] === 3) {
+  for (let i = 0; i < size; i++) {
+    if (oDictionary["Rows"][i] === size
+    || oDictionary["Columns"][i] === size) {
       return "O";
     }
   }
 
-  if (oDictionary["NegativeDiagonal"] === 3
-    || oDictionary["PositiveDiagonal"] === 3) {
+  if (oDictionary["NegativeDiagonal"] === size
+    || oDictionary["PositiveDiagonal"] === size) {
     return "O";
   }
 
